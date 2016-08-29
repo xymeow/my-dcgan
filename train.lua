@@ -25,7 +25,7 @@ end
 opt.seed = torch.random(1, 10000)
 print('random seed set')
 torch.manualSeed(opt.seed)
-torch.setnumthreads(num_threads)
+torch.setnumthreads(opt.num_threads)
 torch.setdefaulttensortype('torch.FloatTensor')
 
 dataset = require 'dataset'

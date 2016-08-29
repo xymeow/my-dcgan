@@ -3,6 +3,8 @@ require 'nn'
 require 'paths'
 require 'image'
 local optnet = require 'optnet'
+require 'cudnn'
+require 'cunn'
 torch.setdefaulttensortype('torch.FloatTensor')
 
 function string:split(sep)
@@ -42,8 +44,15 @@ elseif opt.noise == 'normal' then
 end
 local sample_input = torch.randn(2,100,1,1)
 
-sample_input = sample_input:float()
-net:float()
+if opt.use_gpu > 0 then
+    net:cuda()
+    cudnn.convert(net, cudnn)
+    noise = noise:cuda()
+    sample_input = sample_input:cuda()
+else
+    sample_input = sample_input:float()
+    net:float()
+end
 optnet.optimizeMemory(net, sample_input)
 
 local img = net:forward(noise)

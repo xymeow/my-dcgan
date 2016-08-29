@@ -9,7 +9,7 @@ opt.train = {
 	beta1 = 0.5,
 	ntrain = math.huge,
 	display = 1,
-	use_gpu = 0,
+	use_gpu = 1,
 	noise = 'normal',
 	num_threads = 1,
 	kernel_size = 4,
@@ -18,7 +18,7 @@ opt.train = {
 	channels = 3,
 	img_size = 64,
 	source_dir = {'./images'},
-	file_extensions = 'png',
+	file_extensions = 'JPEG',
 	save_intervals = 1,
 	net_dir = './checkpoints',
 }
@@ -30,7 +30,7 @@ opt.visualize = {
 	net_dir = './checkpoints',
 	img_size = 32,
 	img_name = 'result.png',
-	use_gpu = 0,
+	use_gpu = 1,
 	z_dim = 100,
 }
 
