@@ -20,10 +20,11 @@ assert(opt.net_dir ~= '', 'provide a dir')
 -- _file = {}
 local max_epoch = -1
 for file in paths.files(opt.net_dir) do
-	local f = file:split('_')
-	if tonumber(f[1]) ~= nil and tonumber(f[1]) > max_epoch then
-		max_epoch = tonumber(f[1])
-	end
+    local f = file:split('_')
+    -- print(f)
+    if tonumber(f[1]) ~= nil and tonumber(f[1]) > max_epoch and f[2] == 'gen.t7' then
+        max_epoch = tonumber(f[1])
+    end
 end
 
 net = torch.load(opt.net_dir..'/'..max_epoch..'_gen.t7')

@@ -4,8 +4,7 @@ require 'torch'
 
 local dataset = {}
 
-dataset.height = 32
-dataset.width = 32
+dataset.img_size = 32
 
 dataset.color_space = 'rgb'
 dataset.dir = {}
@@ -17,6 +16,10 @@ dataset.batch_size = 64
 
 function dataset.set_dir(dir)
 	dataset.dir = dir
+end
+
+function dataset.set_img_size(size)
+	dataset.img_size = size
 end
 
 function dataset.set_color_space(cs)
@@ -57,10 +60,10 @@ function dataset.load_img()
 		dataset.loadPaths()
 	end
 	local N = #dataset.imgpath
-	local imglist = torch.FloatTensor(N, dataset.channels, dataset.height, dataset.width)
+	local imglist = torch.FloatTensor(N, dataset.channels, dataset.img_size, dataset.img_size)
 	for i = 1, N do
 		local img = image.load(dataset.imgpath[i], dataset.channels, 'float')
-		img = image.scale(img, dataset.width, dataset.height)
+		img = image.scale(img, dataset.img_size, dataset.img_size)
 		imglist[i] = img
 	end
 	local result = {}
@@ -75,7 +78,7 @@ function dataset.load_img()
 	function result:get_batch()
 		local randindex = torch.randperm(N)
 		-- print(dataset.color_space)
-		local batch = torch.FloatTensor(dataset.batch_size, dataset.channels, dataset.height, dataset.width)
+		local batch = torch.FloatTensor(dataset.batch_size, dataset.channels, dataset.img_size, dataset.img_size)
 		-- print(batch_size)
 		for i = 1, dataset.batch_size do
 			-- table.insert(batch, imglist[randindex[i]])

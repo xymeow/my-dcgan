@@ -15,7 +15,7 @@ local pad = opt.padding
 local imsize = opt.img_size
 local batchsize = opt.batch_size
 
-local function weights_init(m)
+local function weights_init( m )
 	local name = torch.type(m)
 	if name:find('Convolution')
 		then
@@ -47,11 +47,13 @@ local sigmoid = nn.Sigmoid
 local generator = nn.Sequential()
 
 generator:add(Deconvolution(z_dim, gf*8, ks, ks))
-generator:add(BatchNormalization(gf*8)):add(ELU())
+generator:add(BatchNormalization(gf*8)):add(ReLU(true))
 generator:add(Deconvolution(gf*8, gf*4, ks, ks, stride, stride, pad, pad))
-generator:add(BatchNormalization(gf*4)):add(ELU())
-generator:add(Deconvolution(gf*4, gf*1, ks, ks, stride, stride, pad, pad))
-generator:add(BatchNormalization(gf)):add(ELU())
+generator:add(BatchNormalization(gf*4)):add(ReLU(true))
+generator:add(Deconvolution(gf*4, gf*2, ks, ks, stride, stride, pad, pad))
+generator:add(BatchNormalization(gf*2)):add(ReLU(true))
+generator:add(Deconvolution(gf*2, gf, ks, ks, stride, stride, pad, pad))
+generator:add(BatchNormalization(gf)):add(ReLU(true))
 generator:add(Deconvolution(gf, channels, ks, ks, stride, stride, pad, pad))
 generator:add(tanh())
 
@@ -60,11 +62,14 @@ generator:apply(weights_init)
 local discriminator = nn.Sequential()
 
 discriminator:add(Convolution(channels, df, ks, ks, stride, stride, pad, pad))
-discriminator:add(ELU())
-discriminator:add(Convolution(df, df*4, ks, ks, stride, stride, pad, pad))
-discriminator:add(BatchNormalization(df*4)):add(ELU())
+discriminator:add(LeakyReLU(0.2, true))
+-- discriminator:add(ELU())
+discriminator:add(Convolution(df, df*2, ks, ks, stride, stride, pad, pad))
+discriminator:add(BatchNormalization(df*2)):add(LeakyReLU(0.2, true))
+discriminator:add(Convolution(df*2, df*4, ks, ks, stride, stride, pad, pad))
+discriminator:add(BatchNormalization(df*4)):add(LeakyReLU(0.2, true))
 discriminator:add(Convolution(df*4, df*8, ks, ks, stride, stride, pad, pad))
-discriminator:add(BatchNormalization(df*8)):add(ELU())
+discriminator:add(BatchNormalization(df*8)):add(LeakyReLU(0.2, true))
 discriminator:add(Convolution(df*8, 1, ks, ks))
 discriminator:add(sigmoid())
 discriminator:add(nn.View(1):setNumInputDims(3))

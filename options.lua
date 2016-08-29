@@ -15,11 +15,12 @@ opt.train = {
 	kernel_size = 4,
 	stride = 2, 
 	padding = 1,
-	channels = 1,
-	img_size = 32,
+	channels = 3,
+	img_size = 64,
 	source_dir = {'./images'},
 	file_extensions = 'png',
-	save_intervals = 50,
+	save_intervals = 1,
+	net_dir = './checkpoints',
 }
 
 opt.visualize = {
